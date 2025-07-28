@@ -18,13 +18,19 @@ Chappie is a test runner for Bruno collections. The Bruno CLI runner doesn't all
 ### Install
 
 ```
-yarn add chappie
+yarn add chappie-runner
+```
+
+NPM:
+
+```
+npm install chappie-runner
 ```
 
 ### Run
 
 ```
-import { chappie } from "./index.js";
+import { chappie } from "chappie-runner";
 
 chappie.run({
 	collection: "./TestCollection.json", // the relative location of the collection

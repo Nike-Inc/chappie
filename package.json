@@ -1,14 +1,30 @@
 {
-	"name": "@nike-inc/chappie",
-	"packageManager": "yarn@4.2.2",
+	"name": "chappie-runner",
+	"packageManager": "yarn@1.22.22",
 	"type": "module",
 	"main": "src/index.js",
-	"version": "0.0.1",
+	"version": "0.0.15",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Nike-Inc/chappie.git"
+	},
 	"scripts": {
-		"publish": "yarn npm publish",
 		"lint": "eslint ./src",
 		"prettier:fix": "npx prettier --write ./src"
 	},
+	"files": [
+		"src/**/*.js",
+		"src/**/*.html",
+		"index.js"
+	],
+	"keywords": [
+		"test-runner",
+		"bruno",
+		"api",
+		"image-comparison",
+		"json-validation",
+		"automation"
+	],
 	"dependencies": {
 		"chai": "^5.2.0",
 		"chalk": "^5.4.1",
