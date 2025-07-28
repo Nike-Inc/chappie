@@ -1,0 +1,40 @@
+{
+	"name": "TestCollection",
+	"version": "1",
+	"items": [
+		{
+			"type": "http",
+			"name": "JSON Placeholder2",
+			"seq": 2,
+			"request": {
+				"url": "https://placehold.co/40",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "test(\"Returns a result\", function () {\n    expect(res.getStatus()).to.equal(200);\n});",
+				"docs": "",
+				"auth": {
+					"mode": "none"
+				}
+			}
+		}
+	],
+	"environments": [],
+	"brunoConfig": {
+		"version": "1",
+		"name": "TestCollection2",
+		"type": "collection",
+		"ignore": ["node_modules", ".git"],
+		"size": 0,
+		"filesCount": 0
+	}
+}

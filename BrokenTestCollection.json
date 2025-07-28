@@ -1,0 +1,64 @@
+{
+	"name": "TestCollection",
+	"version": "1",
+	"items": [
+		{
+			"type": "http",
+			"name": "JSON Placeholder",
+			"seq": 2,
+			"request": {
+				"url": "http://jsonplaceholder.typicode.com/todos/1",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "test(\"Returns a result\", function () {\n    expect(res.getStatus()).to.equal(202);\n    expect(res.getBody().userId).to.equal(1);\n});",
+				"docs": "",
+				"auth": {
+					"mode": "none"
+				}
+			}
+		},
+		{
+			"type": "http",
+			"name": "JSON Placeholder",
+			"seq": 2,
+			"request": {
+				"url": "http://malformed.url",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"docs": "",
+				"auth": {
+					"mode": "none"
+				}
+			}
+		}
+	],
+	"environments": [],
+	"brunoConfig": {
+		"version": "1",
+		"name": "TestCollection",
+		"type": "collection",
+		"ignore": ["node_modules", ".git"],
+		"size": 0,
+		"filesCount": 0
+	}
+}
