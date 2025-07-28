@@ -1,5 +1,5 @@
 {
-	"name": "chappie",
+	"name": "@nike-inc/chappie",
 	"packageManager": "yarn@4.2.2",
 	"type": "module",
 	"main": "src/index.js",
