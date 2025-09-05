@@ -1,0 +1,70 @@
+{
+	"name": "Default Environment Test",
+	"version": "1",
+	"items": [
+		{
+			"type": "http",
+			"name": "test-default-env",
+			"filename": "test-default-env.bru",
+			"seq": 1,
+			"settings": {
+				"encodeUrl": true
+			},
+			"tags": [],
+			"request": {
+				"url": "{{baseUrl}}/todos",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "test('Should use first environment when no active environment', function() {\n  expect(res.getStatus()).to.equal(200);\n  expect(bru.getVar('baseUrl')).to.equal('http://localhost:3001');\n});",
+				"docs": "",
+				"auth": {
+					"mode": "inherit"
+				}
+			}
+		}
+	],
+	"environments": [
+		{
+			"uid": "env-first",
+			"name": "First Environment",
+			"variables": [
+				{
+					"name": "baseUrl",
+					"value": "http://localhost:3001",
+					"enabled": true,
+					"secret": false
+				}
+			]
+		},
+		{
+			"uid": "env-second",
+			"name": "Second Environment",
+			"variables": [
+				{
+					"name": "baseUrl",
+					"value": "http://localhost:3002",
+					"enabled": true,
+					"secret": false
+				}
+			]
+		}
+	],
+	"brunoConfig": {
+		"version": "1",
+		"name": "Default Environment Test",
+		"type": "collection",
+		"ignore": ["node_modules", ".git"],
+		"size": 0,
+		"filesCount": 0
+	}
+}

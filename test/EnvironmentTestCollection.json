@@ -1,0 +1,136 @@
+{
+	"name": "Environment Variables Test",
+	"version": "1",
+	"items": [
+		{
+			"type": "http",
+			"name": "test-base-url",
+			"filename": "test-base-url.bru",
+			"seq": 1,
+			"settings": {
+				"encodeUrl": true
+			},
+			"tags": [],
+			"request": {
+				"url": "{{baseUrl}}/todos",
+				"method": "GET",
+				"headers": [
+					{
+						"name": "Authorization",
+						"value": "Bearer {{apiToken}}",
+						"enabled": true
+					}
+				],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "const response = res.getBody();\ntest('Should get todos with environment variables', function() {\n  expect(res.getStatus()).to.equal(200);\n  expect(Array.isArray(response)).to.be.true;\n});\n\n// Test runtime variable override (but keep baseUrl working)\nbru.setVar('secretKey', 'runtime-secret-123');\nbru.setVar('customVar', 'runtime-only-value');",
+				"docs": "",
+				"auth": {
+					"mode": "inherit"
+				}
+			}
+		},
+		{
+			"type": "http",
+			"name": "test-runtime-override",
+			"filename": "test-runtime-override.bru",
+			"seq": 2,
+			"settings": {
+				"encodeUrl": true
+			},
+			"tags": [],
+			"request": {
+				"url": "{{baseUrl}}/todos/1",
+				"method": "GET",
+				"headers": [
+					{
+						"name": "X-Secret",
+						"value": "{{secretKey}}",
+						"enabled": true
+					},
+					{
+						"name": "X-Custom",
+						"value": "{{customVar}}",
+						"enabled": true
+					}
+				],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "test('Should use runtime variable override', function () {\n    expect(res.getStatus()).to.equal(200);\n    // The secretKey should now be the runtime value from previous test\n    expect(bru.getVar('secretKey')).to.equal('runtime-secret-123');\n    // The baseUrl should still be the environment value\n    expect(bru.getVar('baseUrl')).to.equal('http://localhost:3001');\n    // The customVar should be the runtime-only value\n    expect(bru.getVar('customVar')).to.equal('runtime-only-value');\n});",
+				"docs": "",
+				"auth": {
+					"mode": "inherit"
+				}
+			}
+		}
+	],
+	"environments": [
+		{
+			"uid": "env-local",
+			"name": "Local Development",
+			"variables": [
+				{
+					"name": "baseUrl",
+					"value": "http://localhost:3001",
+					"enabled": true,
+					"secret": false
+				},
+				{
+					"name": "apiToken",
+					"value": "test-api-token-12345",
+					"enabled": true,
+					"secret": true
+				},
+				{
+					"name": "secretKey",
+					"value": "env-secret-key-abcdef",
+					"enabled": true,
+					"secret": false
+				}
+			]
+		},
+		{
+			"uid": "env-staging",
+			"name": "Staging Environment",
+			"variables": [
+				{
+					"name": "baseUrl",
+					"value": "https://staging.example.com",
+					"enabled": true,
+					"secret": false
+				},
+				{
+					"name": "apiToken",
+					"value": "staging-secret-token-xyz789",
+					"enabled": true,
+					"secret": true
+				}
+			]
+		}
+	],
+	"activeEnvironmentUid": "env-local",
+	"brunoConfig": {
+		"version": "1",
+		"name": "Environment Variables Test",
+		"type": "collection",
+		"ignore": ["node_modules", ".git"],
+		"size": 0,
+		"filesCount": 0
+	}
+}
