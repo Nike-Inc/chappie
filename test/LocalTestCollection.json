@@ -1,0 +1,75 @@
+{
+	"name": "Chappie Local Test",
+	"version": "1",
+	"items": [
+		{
+			"type": "http",
+			"name": "get-all-local",
+			"filename": "get-all.bru",
+			"seq": 1,
+			"settings": {
+				"encodeUrl": true
+			},
+			"tags": [],
+			"request": {
+				"url": "http://localhost:3001/todos",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "const response = res.getBody();\ntest('Should get todos list', function() {\n  expect(res.getStatus()).to.equal(200);\n  expect(Array.isArray(response)).to.be.true;\n  expect(response.length).to.be.greaterThan(0);\n});\n\nif (Array.isArray(response) && response.length > 0) {\n  bru.setVar('ID', response[1].id);\n}",
+				"docs": "",
+				"auth": {
+					"mode": "inherit"
+				}
+			}
+		},
+		{
+			"type": "http",
+			"name": "get-specific-local",
+			"filename": "get-specific.bru",
+			"seq": 2,
+			"settings": {
+				"encodeUrl": true
+			},
+			"tags": [],
+			"request": {
+				"url": "http://localhost:3001/todos/{{ID}}",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "test('Should get specific todo', function () {\n    expect(res.getStatus()).to.equal(200);\n    expect(res.getBody().id).to.equal(bru.getVar('ID'));\n});",
+				"docs": "",
+				"auth": {
+					"mode": "inherit"
+				}
+			}
+		}
+	],
+	"environments": [],
+	"brunoConfig": {
+		"version": "1",
+		"name": "Chappie Local Test",
+		"type": "collection",
+		"ignore": ["node_modules", ".git"],
+		"size": 0,
+		"filesCount": 0
+	}
+}

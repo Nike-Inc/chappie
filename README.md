@@ -12,6 +12,7 @@ Chappie is a test runner for Bruno collections. The Bruno CLI runner doesn't all
 - Image comparison
 - JSON schema validation
 - Bruno response tests
+- **Bruno variable support** - Use `{{variable}}` syntax and `bru.setVar()` / `bru.getVar()`
 
 ## Usage
 
@@ -39,6 +40,7 @@ chappie.run({
 	actualImagesFolder:  './actual-images', // where to store the image results
 	baseImagesFolder'./base-images', // where to store the base images
 	diffImagesFolder'./diff-images', // where to store the diff images (if they exist),
+	allowCodeExecution: false, // set to true if the collection is trusted
 	onTestError: error => {
 		console.log("on test error: ", error.message);
 	},
@@ -53,6 +55,48 @@ chappie.run({
 	},
 });
 ```
+
+### Bruno Variables
+
+Chappie supports Bruno's variable system, allowing you to:
+
+1. **Set variables in tests** using `bru.setVar(key, value)`
+2. **Use variables in URLs, headers, and request bodies** with `{{variableName}}` syntax
+3. **Access variables in tests** using `bru.getVar(key)`
+
+**Example Bruno Collection with Variables:**
+
+```json
+{
+	"name": "Variable Example",
+	"items": [
+		{
+			"name": "Set ID Variable",
+			"seq": 1,
+			"request": {
+				"url": "https://jsonplaceholder.typicode.com/todos",
+				"method": "GET",
+				"tests": "const response = res.getBody();\nif (Array.isArray(response) && response.length > 0) {\n  bru.setVar('ID', response[0].id);\n}"
+			}
+		},
+		{
+			"name": "Use ID Variable",
+			"seq": 2,
+			"request": {
+				"url": "https://jsonplaceholder.typicode.com/todos/{{ID}}",
+				"method": "GET",
+				"tests": "test('Should get specific todo', function() {\n  expect(res.getStatus()).to.equal(200);\n  expect(res.getBody().id).to.equal(bru.getVar('ID'));\n});"
+			}
+		}
+	]
+}
+```
+
+**Variable Features:**
+
+- Variables are **automatically interpolated** in URLs, headers, and request body values
+- Variables are **scoped per iteration** - they reset between iterations
+- **Security note:** Variable interpolation respects the `allowCodeExecution` setting
 
 ### Reports
 
@@ -73,4 +117,5 @@ chappie.run({
 
 - ✅ Image comparison
 - ✅ JSON validation
+- ✅ Bruno variables and interpolation
 - ⬜️ Auth and token support

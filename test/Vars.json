@@ -1,0 +1,75 @@
+{
+	"name": "Chappie",
+	"version": "1",
+	"items": [
+		{
+			"type": "http",
+			"name": "pre-run-script",
+			"filename": "pre-run-script.bru",
+			"seq": 3,
+			"settings": {
+				"encodeUrl": true
+			},
+			"tags": [],
+			"request": {
+				"url": "https://jsonplaceholder.typicode.com/todos/{{ID}}",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "test(\"Returns a result\", function () {\n    expect(res.getStatus()).to.equal(200);\n    expect(res.getBody().id).to.equal(1);\n});",
+				"docs": "",
+				"auth": {
+					"mode": "inherit"
+				}
+			}
+		},
+		{
+			"type": "http",
+			"name": "get-all",
+			"filename": "get-all.bru",
+			"seq": 2,
+			"settings": {
+				"encodeUrl": true
+			},
+			"tags": [],
+			"request": {
+				"url": "https://jsonplaceholder.typicode.com/todos",
+				"method": "GET",
+				"headers": [],
+				"params": [],
+				"body": {
+					"mode": "none",
+					"formUrlEncoded": [],
+					"multipartForm": [],
+					"file": []
+				},
+				"script": {},
+				"vars": {},
+				"assertions": [],
+				"tests": "const response = res.getBody();\nif (Array.isArray(response) && response.length > 0) {\n  bru.setVar('ID', response[1].id);\n}",
+				"docs": "",
+				"auth": {
+					"mode": "inherit"
+				}
+			}
+		}
+	],
+	"environments": [],
+	"brunoConfig": {
+		"version": "1",
+		"name": "Chappie",
+		"type": "collection",
+		"ignore": ["node_modules", ".git"],
+		"size": 0,
+		"filesCount": 0
+	}
+}
