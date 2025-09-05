@@ -3,6 +3,7 @@ import { createInterface } from "readline";
 import chalk from "chalk";
 import superagent from "superagent";
 import { Reporter } from "./utils/reports.js";
+import { BrunoVariableStore } from "./utils/variables.js";
 import { compareImages } from "./utils/image.js";
 import { prepareFolders } from "./utils/files.js";
 import { parseJSONTest, transformTests } from "./utils/tests.js";
@@ -27,70 +28,6 @@ const initialOutputJson = {
 	},
 	results: [],
 };
-
-/**
- * Bruno variable store for managing collection variables
- */
-class BrunoVariableStore {
-	constructor() {
-		this.variables = new Map();
-	}
-
-	setVar(key, value) {
-		this.variables.set(key, value);
-		console.log(chalk.blue(`Set variable: ${key} = ${value}`));
-	}
-
-	getVar(key) {
-		return this.variables.get(key);
-	}
-
-	hasVar(key) {
-		return this.variables.has(key);
-	}
-
-	interpolateString(str) {
-		if (typeof str !== "string") return str;
-
-		return str.replace(/\{\{([^}]+)\}\}/g, (match, varName) => {
-			const trimmedVarName = varName.trim();
-			if (this.hasVar(trimmedVarName)) {
-				const value = this.getVar(trimmedVarName);
-				console.log(
-					chalk.blue(`Replaced {{${trimmedVarName}}} with: ${value}`)
-				);
-				return value;
-			}
-			console.log(
-				chalk.yellow(
-					`Variable {{${trimmedVarName}}} not found, keeping original`
-				)
-			);
-			return match;
-		});
-	}
-
-	interpolateObject(obj) {
-		if (typeof obj === "string") {
-			return this.interpolateString(obj);
-		}
-		if (Array.isArray(obj)) {
-			return obj.map(item => this.interpolateObject(item));
-		}
-		if (typeof obj === "object" && obj !== null) {
-			const result = {};
-			for (const [key, value] of Object.entries(obj)) {
-				result[key] = this.interpolateObject(value);
-			}
-			return result;
-		}
-		return obj;
-	}
-
-	clear() {
-		this.variables.clear();
-	}
-}
 
 /**
  * Prompts user for confirmation to execute JavaScript code from Bruno collections
@@ -184,9 +121,6 @@ const promptForCodeExecution = () => {
 const run = async testConfig => {
 	const outputJson = { summary: { ...initialOutputJson.summary }, results: [] };
 
-	// Initialize Bruno variable store
-	const variableStore = new BrunoVariableStore();
-
 	return new Promise(async (resolve, reject) => {
 		try {
 			const {
@@ -251,6 +185,10 @@ const run = async testConfig => {
 					process.exit(1);
 				}
 				const parsedData = JSON.parse(data);
+
+				// Initialize Bruno variable store with the parsed collection data
+				const variableStore = new BrunoVariableStore(parsedData);
+
 				let folderName = "";
 				async function traverseBrunoCollection(items) {
 					const sortedItems = items.sort((a, b) => a.seq - b.seq);
@@ -457,7 +395,8 @@ const run = async testConfig => {
 				}
 				const testsToRun = Array.from({ length: iterations });
 				for (const _ of testsToRun) {
-					// Clear variables at the start of each iteration
+					// Clear only runtime variables at the start of each iteration
+					// Environment variables are preserved
 					variableStore.clear();
 
 					const concurrentTests = Array.from({ length: concurrency }, () =>

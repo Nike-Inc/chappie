@@ -58,44 +58,117 @@ chappie.run({
 
 ### Bruno Variables
 
-Chappie supports Bruno's variable system, allowing you to:
+Chappie supports Bruno's comprehensive variable system with environment support:
+
+## Variable System
+
+### Runtime Variables
+
+Set and access variables during test execution:
 
 1. **Set variables in tests** using `bru.setVar(key, value)`
 2. **Use variables in URLs, headers, and request bodies** with `{{variableName}}` syntax
 3. **Access variables in tests** using `bru.getVar(key)`
 
-**Example Bruno Collection with Variables:**
+### Environment Variables
+
+Define variables in Bruno collection environments:
+
+```json
+{
+	"name": "API Collection",
+	"environments": [
+		{
+			"uid": "env-local",
+			"name": "Local Development",
+			"variables": [
+				{
+					"name": "baseUrl",
+					"value": "http://localhost:3001",
+					"enabled": true,
+					"secret": false
+				},
+				{
+					"name": "apiToken",
+					"value": "secret-token-123",
+					"enabled": true,
+					"secret": true
+				}
+			]
+		}
+	],
+	"activeEnvironmentUid": "env-local"
+}
+```
+
+### Variable Priority System
+
+Variables are resolved with the following priority:
+
+1. **Runtime variables** (set with `bru.setVar()`) - highest priority
+2. **Environment variables** (from collection environments) - lower priority
+
+### Environment Selection
+
+- If `activeEnvironmentUid` is specified, that environment is used
+- If no active environment, the **first environment** is used by default
+- If no environments exist, only runtime variables are available
+
+**Example Bruno Collection with Environment Variables:**
 
 ```json
 {
 	"name": "Variable Example",
 	"items": [
 		{
-			"name": "Set ID Variable",
+			"name": "Use Environment Variable",
 			"seq": 1,
 			"request": {
-				"url": "https://jsonplaceholder.typicode.com/todos",
+				"url": "{{baseUrl}}/todos",
 				"method": "GET",
-				"tests": "const response = res.getBody();\nif (Array.isArray(response) && response.length > 0) {\n  bru.setVar('ID', response[0].id);\n}"
+				"headers": [
+					{
+						"name": "Authorization",
+						"value": "Bearer {{apiToken}}",
+						"enabled": true
+					}
+				],
+				"tests": "const response = res.getBody();\nif (Array.isArray(response) && response.length > 0) {\n  bru.setVar('todoId', response[0].id);\n}"
 			}
 		},
 		{
-			"name": "Use ID Variable",
+			"name": "Override with Runtime Variable",
 			"seq": 2,
 			"request": {
-				"url": "https://jsonplaceholder.typicode.com/todos/{{ID}}",
+				"url": "{{baseUrl}}/todos/{{todoId}}",
 				"method": "GET",
-				"tests": "test('Should get specific todo', function() {\n  expect(res.getStatus()).to.equal(200);\n  expect(res.getBody().id).to.equal(bru.getVar('ID'));\n});"
+				"tests": "test('Should use runtime variable', function() {\n  expect(res.getStatus()).to.equal(200);\n  expect(bru.getVar('todoId')).to.exist;\n});"
 			}
 		}
-	]
+	],
+	"environments": [
+		{
+			"uid": "env-local",
+			"name": "Local Development",
+			"variables": [
+				{
+					"name": "baseUrl",
+					"value": "http://localhost:3001",
+					"enabled": true
+				}
+			]
+		}
+	],
+	"activeEnvironmentUid": "env-local"
 }
 ```
 
 **Variable Features:**
 
 - Variables are **automatically interpolated** in URLs, headers, and request body values
-- Variables are **scoped per iteration** - they reset between iterations
+- **Runtime variables** are scoped per iteration - they reset between iterations
+- **Environment variables** persist across iterations and tests
+- **Secret masking**: Variables with names containing 'secret', 'password', 'token', 'key', or 'auth' are automatically masked in logs
 - **Security note:** Variable interpolation respects the `allowCodeExecution` setting
 
 ### Reports
