@@ -10,7 +10,9 @@
 	},
 	"scripts": {
 		"lint": "eslint ./src",
-		"prettier:fix": "npx prettier --write ./src"
+		"prettier:fix": "npx prettier --write ./src",
+		"test": "node test/test.js",
+		"mock-server": "node test/mock-server.js"
 	},
 	"files": [
 		"src/**/*.js",
