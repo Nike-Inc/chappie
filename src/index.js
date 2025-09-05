@@ -6,7 +6,6 @@ import { Reporter } from "./utils/reports.js";
 import { BrunoVariableStore } from "./utils/variables.js";
 import { compareImages } from "./utils/image.js";
 import { prepareFolders } from "./utils/files.js";
-import {} from "./utils/files.js";
 import { parseJSONTest, transformTests } from "./utils/tests.js";
 
 const ACTUAL_IMAGES_FOLDER = "./actual-images";
